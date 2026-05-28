@@ -51,7 +51,6 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: suricata-upstream
-      - run: ls -la
       - name: Extract the upstream tarball
         run: |
           tar --extract --verbose --gunzip --directory ./ --strip-components=1 --file "suricata-$UPSTREAM_VERSION.tar.gz"
@@ -63,11 +62,11 @@ jobs:
           mk-build-deps --install --remove --tool "apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y"
       - name: Build the package
         run: dpkg-buildpackage --unsigned-source --unsigned-changes --build=binary
-#       - name: Upload artifact
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: >-
-#             deb-${{ matrix.major_version }}-${{ matrix.variant }}-
-#             ${{ matrix.distro }}-${{ matrix.arch }}
-#           path: output/*.deb
+      - run: ls -la ../
+      - name: Upload build files to artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: "suricata-$UPSTREAM_VERSION-${{ matrix.variant }}-${{ matrix.distro }}-${{ matrix.arch }}"
+          path: ../suricata8_*
+          retention-days: 5
 ...

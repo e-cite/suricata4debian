@@ -52,8 +52,7 @@ jobs:
       - run: ls -la
       - name: Extract the upstream tarball
         run: |
-          tar --extract --verbose --gunzip --directory ./
-          --file "suricata-$UPSTREAM_VERSION.tar.gz"
+          tar --extract --verbose --gunzip --file "suricata-$UPSTREAM_VERSION.tar.gz"
       - run: ls -la
 #       - uses: actions/checkout@v4
 #

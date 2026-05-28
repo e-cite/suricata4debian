@@ -29,7 +29,14 @@ jobs:
           echo "suricata${{ matrix.major_version }}-${{ matrix.variant }} \
           for ${{ matrix.distro }} on ${{ matrix.arch }}"
       - run: cat /etc/debian_version
-      - run: apt update && apt-get install -y curl
+      - run: |
+          apt update
+          apt-get install -y curl
+      - run: curl -O "https://www.openinfosecfoundation.org/download/suricata-$UPSTREAM_VERSION.tar.gz"
+      # TODO: Verify download
+      - run: tar -xvzf "suricata-$UPSTREAM_VERSION.tar.gz"
+      - run: ls -l      
+      
 #       - uses: actions/checkout@v4
 #
 #       - name: Install build dependencies

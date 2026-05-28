@@ -3,6 +3,8 @@ name: First Test workflow
 on:
   - push
   - workflow_dispatch
+env:
+  UPSTREAM_VERSION: 8.0.5
 jobs:
   build:
     strategy:
@@ -22,8 +24,10 @@ jobs:
       image: debian:${{ matrix.distro }}
 
     steps:
+      - run: echo "$UPSTREAM_VERSION"
+      - run: echo "Just for testing: $matrix.major_version
       - run: |
-          echo "suricata${{ matrix.major_version }}-${{ matrix.variant }}
+          echo "suricata${{ matrix.major_version }}-${{ matrix.variant }} \
           for ${{ matrix.distro }} on ${{ matrix.arch }}"
       - run: cat /etc/debian_version
 #       - uses: actions/checkout@v4

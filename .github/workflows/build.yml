@@ -29,7 +29,7 @@ jobs:
           echo "suricata${{ matrix.major_version }}-${{ matrix.variant }} \
           for ${{ matrix.distro }} on ${{ matrix.arch }}"
       - run: cat /etc/debian_version
-      - run: which wget curl
+      - run: apt update && apt-get install -y curl
 #       - uses: actions/checkout@v4
 #
 #       - name: Install build dependencies

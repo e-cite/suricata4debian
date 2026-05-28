@@ -19,8 +19,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: suricata-upstream
-          path: "suricata-$UPSTREAM_VERSION.tar.gz"
-          retention-days: 5
+          path: "suricata-*.tar.gz"
+          retention-days: 1
   build:
     needs: download
     strategy:

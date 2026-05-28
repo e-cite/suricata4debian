@@ -4,12 +4,12 @@ on:
   - push
   - workflow_dispatch
 env:
-  UPSTREAM_VERSION: 8.0.5
+  UPSTREAM_VERSION: "8.0.5"
 jobs:
   download:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "UPSTREAM_VERSION: $UPSTREAM_VERSION"
+      - run: echo "UPSTREAM_VERSION=$UPSTREAM_VERSION"
       - name: Download Suricata upstream tarball for given UPSTREAM_VERSION
         run: curl -O "https://www.openinfosecfoundation.org/download/suricata-$UPSTREAM_VERSION.tar.gz"
       - name: Calculate SHA256 hash of download file

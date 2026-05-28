@@ -35,7 +35,7 @@ jobs:
     container:
       image: debian:${{ matrix.distro }}
     env:
-      DEBFULLNAME: $GITHUB_ACTOR
+      DEBFULLNAME: "$GITHUB_ACTOR"
       DEBEMAIL: dev@andreas-dolp.de
     steps:
       - name: Print current build parameters
@@ -50,7 +50,10 @@ jobs:
         with:
           name: suricata-upstream
       - run: ls -la
-      - run: tar -xvzf "suricata-$UPSTREAM_VERSION.tar.gz" ./
+      - name: Extract the upstream tarball
+        run: |
+          tar --extract --verbose --gunzip --directory ./
+          --file "suricata-$UPSTREAM_VERSION.tar.gz"
       - run: ls -la
 #       - uses: actions/checkout@v4
 #

@@ -9,10 +9,6 @@ jobs:
   download:
     runs-on: ubuntu-latest
     steps:
-      - name: Install tools for download
-        run: |
-          apt update
-          apt-get install -y curl sha256sum
       - name: Download Suricata $UPSTREAM_VERSION upstream tarball
         run: curl -O "https://www.openinfosecfoundation.org/download/suricata-$UPSTREAM_VERSION.tar.gz"
       - name: Calculate SHA256 hash of download file

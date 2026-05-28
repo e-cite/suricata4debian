@@ -9,10 +9,11 @@ jobs:
   download:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "UPSTREAM_VERSION=$UPSTREAM_VERSION"
+      - name: Print UPSTREAM_VERSION
+        run: echo "UPSTREAM_VERSION=$UPSTREAM_VERSION"
       - name: Download Suricata upstream tarball for given UPSTREAM_VERSION
         run: curl -O "https://www.openinfosecfoundation.org/download/suricata-$UPSTREAM_VERSION.tar.gz"
-      - name: Calculate SHA256 hash of download file
+      - name: Calculate SHA256 hash of downloaded file
         run: sha256sum "suricata-$UPSTREAM_VERSION.tar.gz"
       # TODO: Verify download
       - run: ls -l
@@ -27,29 +28,29 @@ jobs:
     strategy:
       fail-fast: false  # Do not cancel other matrix jobs when one job fails
       matrix:
-        # major_version: ["7", "8"]
         variant: [stable]
-        distro: [trixie]
+        distro: [bookworm, trixie]
         arch: [amd64]
-        #exclude:
-        #  # daily nur für 8, nicht für 7
-        #  - major_version: "7"
-        #    variant: "daily"
-    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     container:
       image: debian:${{ matrix.distro }}
+    env:
+      DEBFULLNAME: $GITHUB_ACTOR
+      DEBEMAIL: dev@andreas-dolp.de
     steps:
-      - run: echo "$UPSTREAM_VERSION"
-      - run: |
-          echo "suricata${{ matrix.major_version }}-${{ matrix.variant }} \
+      - name: Print current build parameters
+        run: |
+          echo "suricata-$UPSTREAM_VERSION-${{ matrix.variant }} \
           for ${{ matrix.distro }} on ${{ matrix.arch }}"
+          echo "DEBFULLNAME=$DEBFULLNAME"
+          echo "DEBEMAIL=$DEBEMAIL"
       - run: cat /etc/debian_version
       - name: Download upstream tarball as artifact
         uses: actions/download-artifact@v8
         with:
           name: suricata-upstream
       - run: ls -la
-      - run: tar -xvzf "suricata-$UPSTREAM_VERSION.tar.gz"
+      - run: tar -xvzf "suricata-$UPSTREAM_VERSION.tar.gz" ./
       - run: ls -la
 #       - uses: actions/checkout@v4
 #

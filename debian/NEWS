@@ -1,0 +1,9 @@
+suricata (1:8.0.1-1) unstable; urgency=medium
+
+    Support for sysv init files and configuration via /etc/default/suricata
+    has been removed. The systemd-based setup requires a different
+    customization approach (e.g. to enable nfqueue mode or configure
+    inspection interfaces). Please see the README.Debian file to learn
+    about configuration as intended now.
+
+ -- Sascha Steinbiss <satta@debian.org>  Thu, 21 Aug 2025 19:30:00 +0200

@@ -1,0 +1,8 @@
+enable-unix-command-socket.patch
+configure-landlock.patch
+cross.patch
+no-use-gnu.patch
+fix-repeated-builds.patch
+with-ebpf-includes.patch
+avoid-to-include-if_tunnel-h.patch
+disable-cpu-dependent-tests.patch

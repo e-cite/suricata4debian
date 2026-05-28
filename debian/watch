@@ -1,0 +1,5 @@
+Version: 5
+
+Source: https://download.openinfosecfoundation.org/download/
+Matching-Pattern: suricata-([\d\.]*)\.tar\.gz
+Pgpsigurlmangle: s/$/.sig/

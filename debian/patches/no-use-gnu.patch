@@ -1,0 +1,33 @@
+Description: Don't use __USE_GNU
+ __USE_GNU is a glibc-internal symbol.
+ AC_USE_SYSTEM_EXTENSIONS is the proper autoconf
+ way to enable extensions.
+Author: Adrian Bunk <bunk@debian.org>
+Bug-Debian: https://bugs.debian.org/890432
+Last-Update: 2025-07-11
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -6,6 +6,7 @@
+     AM_INIT_AUTOMAKE([tar-ustar subdir-objects])
+ 
+     AC_LANG([C])
++    AC_USE_SYSTEM_EXTENSIONS
+     LT_INIT
+     PKG_PROG_PKG_CONFIG
+ 
+--- a/src/suricata-common.h
++++ b/src/suricata-common.h
+@@ -35,12 +35,6 @@
+ #define DBG_PERF
+ #endif
+ 
+-#ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
+-#endif
+-
+-#define __USE_GNU
+-
+ #if defined(__clang_analyzer__)
+ /* clang analyzer acts as DEBUG_VALIDATION in some places, so
+  * force this so #ifdef DEBUG_VALIDATION code gets included */

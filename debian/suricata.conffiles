@@ -1,0 +1,2 @@
+remove-on-upgrade /etc/init.d/suricata
+remove-on-upgrade /etc/default/suricata

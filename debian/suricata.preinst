@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+# we do not need alternatives anymore
+if update-alternatives --quiet --query suricata 2> /dev/null; then
+    echo "Removing legacy alternatives for Hyperscan/non-Hyperscan versions"
+    update-alternatives --remove-all suricata
+fi
+
+# Do some cleanup when upgrading to 8.x from lower major version to ensure
+# a smooth upgrade:
+#   * Remove suricata.pid and suricata-command.socket at the old location
+if dpkg --compare-versions "$2" lt "1:8" >/dev/null; then
+    for i in /run/suricata.pid /var/run/suricata-command.socket; do
+        if [ -e "$i" ]; then
+            rm $i
+        fi
+    done
+fi
+
+#DEBHELPER#
+
+exit 0

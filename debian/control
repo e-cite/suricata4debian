@@ -1,0 +1,61 @@
+Source: suricata
+Section: net
+Maintainer: Sascha Steinbiss <satta@debian.org>
+Uploaders: Pierre Chifflier <pollux@debian.org>, Andreas Dolp <dev@andreas-dolp.de>
+Build-Depends: debhelper-compat (= 13),
+	       dh-python,
+               libbpf-dev (>= 1:0.7.0) [amd64 arm64 armel armhf i386 ppc64el s390x ppc64 sparc64 x32],
+               clang [amd64 arm64 armel armhf i386 ppc64el s390x ppc64 sparc64 x32],
+               llvm [amd64 arm64 armel armhf i386 ppc64el s390x ppc64 sparc64 x32],
+               libcap-ng-dev,
+               libelf-dev [amd64 arm64 armel armhf i386 ppc64el s390x ppc64 sparc64 x32],
+               libevent-dev,
+               libgeoip-dev,
+               libhiredis-dev,
+               libjansson-dev,
+               libhyperscan-dev (>= 4.4.0) [i386 amd64 x32],
+               rustc (>= 1.75.0),
+               cargo (>= 0.29.0),
+               liblz4-dev,
+               libmagic-dev,
+               libmaxminddb-dev,
+               libnet1-dev | libnet-dev,
+               libnetfilter-log-dev,
+               libnetfilter-queue-dev,
+               libpcap-dev,
+               libpcre2-dev,
+               libyaml-dev,
+               python3:any,
+               zlib1g-dev | libz-dev,
+               procps,
+               dpdk-dev [amd64 arm64 riscv64 ppc64el],
+               libnuma-dev [amd64 arm64 riscv64 ppc64el],
+               libunwind-dev,
+               libhwloc-dev [amd64 arm64 armhf i386 ppc64el riscv64 s390x]
+Standards-Version: 4.7.4
+Homepage: https://suricata.io
+Vcs-Browser: https://salsa.debian.org/pkg-suricata-team/pkg-suricata
+Vcs-Git: https://salsa.debian.org/pkg-suricata-team/pkg-suricata.git
+
+Package: suricata
+Architecture: linux-any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}
+Conflicts: suricata-hyperscan
+Replaces: suricata-hyperscan
+Recommends: python3, suricata-update
+Suggests: libtcmalloc-minimal4
+Description: Next Generation Intrusion Detection and Prevention Tool
+ Suricata is a network Intrusion Detection System (IDS). It is based on
+ rules (and is fully compatible with snort rules) to detect a variety of
+ attacks / probes by searching packet content.
+ .
+ It can also be used as Intrusion Prevention System (IPS), and as higher layer
+ firewall.
+ .
+ This new Engine supports Multi-Threading, Automatic Protocol Detection
+ (IP, TCP, UDP, ICMP, HTTP, TLS, FTP and SMB), Gzip Decompression, Fast
+ IP Matching and coming soon hardware acceleration on CUDA and OpenCL GPU
+ cards.
+ .
+ This version has inline (NFQUEUE) support enabled.

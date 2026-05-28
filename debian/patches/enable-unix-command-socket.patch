@@ -1,0 +1,18 @@
+Description: Enable and configure Suricata unix command socket
+From: Arturo Borrero Gonzalez <arturo@debian.org>
+Author: Andreas Dolp <dev@andreas-dolp.de>
+Forwarded: not-needed
+Last-Update: 2025-08-22
+--- a/suricata.yaml.in
++++ b/suricata.yaml.in
+@@ -1396,8 +1396,8 @@
+ # activated in live capture mode. You can use the filename variable to set
+ # the file name of the socket.
+ unix-command:
+-  enabled: auto
+-  #filename: custom.socket
++  enabled: yes
++  filename: @e_localstatedir@/suricata-command.socket
+ 
+ # Magic file. The extension .mgc is added to the value here.
+ #magic-file: /usr/share/file/magic

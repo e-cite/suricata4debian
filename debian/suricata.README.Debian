@@ -1,0 +1,99 @@
+Suricata for Debian
+-------------------
+
+The engine is an Open Source Next Generation Intrusion Detection and
+Prevention Tool, not intended to just replace or emulate the existing tools in
+the industry, but to bring new ideas and technologies to the field.
+
+To run the engine with default configuration on interface eth0 (in live mode),
+run the following command (as root):
+
+  suricata -c /etc/suricata/suricata.yaml -i eth0
+
+To run in live NFQUEUE mode, use (as root):
+
+  suricata -c /etc/suricata/suricata.yaml -q $QUEUE_ID
+
+You can also run suricata on a PCAP file:
+
+  suricata -c /etc/suricata/suricata.yaml -r file.pcap
+
+
+Landlock LSM security sandbox
+-----------------------------
+
+Suricata supports landlock LSM security sandboxing to further improve security.
+Suricata can advise the Linux kernel to restrict access of its own processes to
+only the folders used by Suricata, so that in case of a possible security flaw
+the impact can be limited.
+
+Landlock requires Linux kernels >= 5.13 and needs to be activated in the
+kernel, which should be default since Debian Bookworm. This can be tested:
+
+  dmesg | grep landlock || journalctl -kb -g landlock
+
+The suricata.yaml of this package comes with preconfigured settings, but
+landlock disabled by default, because kernel support can't be guaranteed in
+container deployments. If supported, simply activate it by this setting in
+suricata.yaml:
+
+  'landlock.enabled: yes'
+
+Please note that some Suricata default directories like 'default-rule-path',
+'default-log-dir' and the state-dir '@e_localstatedir@' does not need to be
+named explicitly in the directories section, since they are added
+automatically by Suricata itself.
+
+See the upstream documentation for further details:
+https://docs.suricata.io/en/latest/configuration/landlock.html#using-landlock-lsm
+
+
+Daemon system integration
+-------------------------
+
+The suricata daemon comes preconfigured to run as a system daemon with systemd,
+in af-packet mode and using /etc/suricata/suricata.yaml as configuration.
+Please ensure you configure the correct interface in the af-packet section of
+/etc/suricata/suricata.yaml.
+
+You can start/stop the daemon with:
+
+  sudo systemctl start suricata.service
+
+and
+
+  sudo systemctl stop suricata.service
+
+You can copy /usr/lib/systemd/system/suricata.service to
+/etc/systemd/system/suricata.service and adapt the configuration to your needs.
+
+Alternatively, you can override the command line (ExecStart) in the packaged
+systemd unit file using systemd’s drop-in feature [1].
+For example, to start the service in nfqueue mode with queue, create a file
+/etc/systemd/system/suricata.service.d/override.conf with the following content:
+
+   [Service]
+   ExecStart=
+   ExecStart=/usr/bin/suricata -D -q 0 -c /etc/suricata/suricata.yaml --pidfile /var/run/suricata/suricata.pid
+
+This overrides the default af-packet start by first clearing the previous
+ExecStart directive and then sets a new one, which you can now tailor as you
+wish. Then run
+
+  sudo systemctl daemon-reload
+
+and then
+
+  sudo systemctl restart suricata.service
+
+[1] https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#id-1.14.3
+
+
+Updating Rules
+--------------
+
+You should edit /etc/suricata/suricata.yaml and adjust it to fit your needs.
+The recommended way to update rules is via suricata-update (also packaged in
+Debian).
+Please consult its documentation for more details:
+https://suricata-update.readthedocs.io

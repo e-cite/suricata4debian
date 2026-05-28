@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+RUNDIR=/var/run/suricata
+
+if [ "$1" = configure ]; then
+    if [ ! -d "$RUNDIR" ]; then
+        mkdir $RUNDIR
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0

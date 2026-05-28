@@ -1,0 +1,23 @@
+From: Helmut Grohne <helmut@subdivi.de>
+Description: Fix a FTCBFS issue because of using AC_PATH_PROG
+ This patch fixes a FTCBFS issue caused by using AC_PATH_PROG to
+ discover the location of pkg-config, which fails to select the
+ correct version on cross-compilations. The corresponding lintian
+ warning 'autotools-pkg-config-macro-not-cross-compilation-safe'
+ suggests to use PKG_PROG_PKG_CONFIG and $PKG_CONFIG instead.
+Bug-Debian: https://bugs.debian.org/895996
+Last-Update: 2025-07-11
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -79,8 +79,8 @@
+     AC_PATH_PROG(HAVE_CYGPATH, cygpath, "no")
+     AM_CONDITIONAL([HAVE_CYGPATH], [test "x$HAVE_CYGPATH" != "xno"])
+ 
+-    AC_PATH_PROG(HAVE_PKG_CONFIG, pkg-config, "no")
+-    if test "$HAVE_PKG_CONFIG" = "no"; then
++    PKG_PROG_PKG_CONFIG
++    if test "x$PKG_CONFIG" = "x"; then
+         echo
+         echo "   ERROR! pkg-config not found, go get it  "
+         echo "   http://pkg-config.freedesktop.org/wiki/ "

@@ -29,7 +29,7 @@ jobs:
       fail-fast: false  # Do not cancel other matrix jobs when one job fails
       matrix:
         variant: [stable]
-        distro: [bookworm, trixie]
+        distro: [trixie]
         arch: [amd64]
     runs-on: ubuntu-latest
     container:
@@ -54,24 +54,15 @@ jobs:
       - run: ls -la
       - name: Extract the upstream tarball
         run: |
-          tar --extract --verbose --gunzip --file "suricata-$UPSTREAM_VERSION.tar.gz"
+          tar --extract --verbose --gunzip --directory ./ --strip-components=1 --file "suricata-$UPSTREAM_VERSION.tar.gz"
       - run: ls -la
-#       - name: Install build dependencies
-#         run: |
-#           apt-get update
-#           apt-get install -y --no-install-recommends \
-#             devscripts debhelper [...]
-#
-#       - name: Build
-#         env:
-#           OUTPUT_DIR: ${{ github.workspace }}/output
-#         run: |
-#           bash scripts/build-package.sh \
-#             ${{ matrix.major_version }} \
-#             ${{ inputs.upstream_version }} \
-#             ${{ matrix.distro }} \
-#             ${{ matrix.variant }}
-#
+      - name: Install build dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends build-essential devscripts
+          mk-build-deps -ir
+      - name: Build the package
+        run: dpkg-buildpackage -us -uc
 #       - name: Upload artifact
 #         uses: actions/upload-artifact@v4
 #         with:

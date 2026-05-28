@@ -1,0 +1,30 @@
+Description: disable tests that can fail depending on CPU number
+ Some tests expect a minimum number of CPUs in the system and will
+ always fail when there are less. We disable these for now; upstream is
+ aware and will address this later.
+Author: Sascha Steinbiss <satta@debian.org>
+Bug: https://redmine.openinfosecfoundation.org/issues/7831
+Last-Update: 2025-09-26
+--- a/src/util-affinity.c
++++ b/src/util-affinity.c
+@@ -1994,16 +1994,16 @@
+ #if defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__)
+     UtRegisterTest("ThreadingAffinityTest01", ThreadingAffinityTest01);
+     UtRegisterTest("ThreadingAffinityTest02", ThreadingAffinityTest02);
+-    UtRegisterTest("ThreadingAffinityTest03", ThreadingAffinityTest03);
++    /* UtRegisterTest("ThreadingAffinityTest03", ThreadingAffinityTest03); */
+     UtRegisterTest("ThreadingAffinityTest04", ThreadingAffinityTest04);
+     UtRegisterTest("ThreadingAffinityTest05", ThreadingAffinityTest05);
+-    UtRegisterTest("ThreadingAffinityTest06", ThreadingAffinityTest06);
++    /* UtRegisterTest("ThreadingAffinityTest06", ThreadingAffinityTest06); */
+     UtRegisterTest("ThreadingAffinityTest07", ThreadingAffinityTest07);
+     UtRegisterTest("ThreadingAffinityTest08", ThreadingAffinityTest08);
+     UtRegisterTest("ThreadingAffinityTest09", ThreadingAffinityTest09);
+     UtRegisterTest("ThreadingAffinityTest10", ThreadingAffinityTest10);
+-    UtRegisterTest("ThreadingAffinityTest11", ThreadingAffinityTest11);
+-    UtRegisterTest("ThreadingAffinityTest12", ThreadingAffinityTest12);
++    /* UtRegisterTest("ThreadingAffinityTest11", ThreadingAffinityTest11);
++    UtRegisterTest("ThreadingAffinityTest12", ThreadingAffinityTest12); */
+     UtRegisterTest("ThreadingAffinityTest13", ThreadingAffinityTest13);
+     UtRegisterTest("ThreadingAffinityTest14", ThreadingAffinityTest14);
+     UtRegisterTest("ThreadingAffinityTest15", ThreadingAffinityTest15);

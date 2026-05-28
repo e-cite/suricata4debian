@@ -1,0 +1,91 @@
+#!/usr/bin/make -f
+
+# verbose mode
+export DH_VERBOSE=1
+
+SURICATA_DESTDIR = $(CURDIR)/debian/tmp
+export DEB_BUILD_MAINT_OPTIONS = hardening=+pie,+bindnow
+export CARGO_HOME = $(CURDIR)/debian/cargohome
+
+include /usr/share/dpkg/architecture.mk
+
+# workaround for linking issue on some archs
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--allow-multiple-definition
+EXTRA_ATOMIC_ARCHS = armel mipsel powerpc
+ifneq (,$(findstring $(DEB_HOST_ARCH),$(EXTRA_ATOMIC_ARCHS)))
+	DEB_LDFLAGS_MAINT_APPEND +=  -Wl,--no-as-needed -Wl,-latomic -Wl,--as-needed
+	export DEB_LDFLAGS_MAINT_APPEND
+endif
+
+EBPF_ARCHS = amd64 arm64 armel armhf i386 ppc64el s390x ppc64 sparc64 x32
+DPDK_ARCHS = amd64x arm64x riscv64x ppc64elx
+HWLOC_ARCHS = amd64x arm64x armhfx i386x ppc64elx riscv64x s390xx
+
+ifneq (,$(findstring $(DEB_HOST_ARCH)x,$(DPDK_ARCHS)))
+	ENABLE_DPDK="--enable-dpdk"
+endif
+
+ifneq (,$(findstring $(DEB_HOST_ARCH)x,$(HWLOC_ARCHS)))
+	ENABLE_HWLOC="--enable-hwloc"
+endif
+
+CI ?= $(shell $(CURDIR)/debian/building-in-ci.sh)
+ifeq ($(CI),true)
+        ENABLE_UNITTESTS="--enable-unittests"
+endif
+
+ifneq (,$(findstring $(DEB_HOST_ARCH),$(EBPF_ARCHS)))
+	ENABLE_EBPF=--enable-ebpf --enable-ebpf-build \
+		--with-ebpf-includes=/usr/include/$(DEB_HOST_MULTIARCH)
+endif
+
+CONFIGURE_ARGS = --enable-af-packet --enable-nfqueue --enable-nflog \
+	--enable-gccprotect --disable-gccmarch-native \
+	--with-libevent-includes=/usr/include --with-libevent-libraries=/usr/lib/$(DEB_HOST_MULTIARCH) \
+	--with-libhs-libraries=/usr/lib/$(DEB_HOST_MULTIARCH) \
+	--disable-coccinelle \
+	--enable-geoip --enable-hiredis \
+	--disable-suricata-update \
+	$(ENABLE_UNITTESTS) \
+	$(ENABLE_EBPF) \
+	$(ENABLE_DPDK) \
+	$(ENABLE_HWLOC)
+
+override_dh_auto_configure:
+	dh_auto_configure -- $(CONFIGURE_ARGS)
+
+override_dh_auto_build:
+	uname -a
+	mkdir -p $(CARGO_HOME)
+	@echo "blhc: ignore-line-regexp: .*Compiling.*"
+	dh_auto_build
+
+override_dh_auto_clean:
+	rm -rf $(CARGO_HOME)
+	rm -f debian/suricata.substvars
+
+override_dh_auto_install:
+	dh_auto_install --destdir=$(SURICATA_DESTDIR)
+	rm -rf $(SURICATA_DESTDIR)/usr/lib/python*;\
+	(cd python && make prefix=$(SURICATA_DESTDIR)/usr)
+	# clean upstream install documentation
+	rm -rf $(SURICATA_DESTDIR)/usr/share/doc/suricata/*
+	$(foreach file, $(wildcard ebpf/*bpf), \
+		install -D -t $(SURICATA_DESTDIR)/usr/lib/suricata/ebpf $(file) ;\
+	)
+
+override_dh_installman:
+	dh_installman
+	find debian/ -name "*.1" -exec sed -i '/^\.TH/a .if n .ftr C R' {} +
+
+override_dh_auto_test:
+	# do nothing
+
+override_dh_missing:
+	dh_missing --list-missing
+
+override_dh_gencontrol:
+	dh_gencontrol
+
+%:
+	dh $@ --with python3

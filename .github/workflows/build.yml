@@ -1,4 +1,8 @@
 ---
+name: First Test workflow
+on:
+  - push
+  - workflow_dispatch
 jobs:
   build:
     strategy:

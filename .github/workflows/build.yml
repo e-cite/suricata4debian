@@ -35,8 +35,8 @@ jobs:
     container:
       image: debian:${{ matrix.distro }}
     env:
-      DEBFULLNAME: "$GITHUB_ACTOR"
-      DEBEMAIL: dev@andreas-dolp.de
+      DEBFULLNAME: GitHub CI/CD
+      DEBEMAIL: noreply@example.com
     steps:
       - name: Print current build parameters
         run: |

@@ -66,7 +66,7 @@ jobs:
       - name: Upload build files to artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: "suricata-$UPSTREAM_VERSION-${{ matrix.variant }}-${{ matrix.distro }}-${{ matrix.arch }}"
-          path: ../suricata8_*
+          name: "suricata-${{ UPSTREAM_VERSION }}-${{ matrix.variant }}-${{ matrix.distro }}-${{ matrix.arch }}"
+          path: '/__w/suricata4debian/suricata8_*'
           retention-days: 5
 ...

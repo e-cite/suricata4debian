@@ -9,7 +9,8 @@ jobs:
   download:
     runs-on: ubuntu-latest
     steps:
-      - name: Download Suricata $UPSTREAM_VERSION upstream tarball
+      - run: echo "UPSTREAM_VERSION: $UPSTREAM_VERSION"
+      - name: Download Suricata upstream tarball for given UPSTREAM_VERSION
         run: curl -O "https://www.openinfosecfoundation.org/download/suricata-$UPSTREAM_VERSION.tar.gz"
       - name: Calculate SHA256 hash of download file
         run: sha256sum "suricata-$UPSTREAM_VERSION.tar.gz"
@@ -34,11 +35,9 @@ jobs:
         #  # daily nur für 8, nicht für 7
         #  - major_version: "7"
         #    variant: "daily"
-
     runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     container:
       image: debian:${{ matrix.distro }}
-
     steps:
       - run: echo "$UPSTREAM_VERSION"
       - run: |

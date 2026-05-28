@@ -60,7 +60,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends build-essential devscripts equivs
-          mk-build-deps -ir
+          mk-build-deps --install --remove --tool "apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y"
       - name: Build the package
         run: dpkg-buildpackage -us -uc
 #       - name: Upload artifact

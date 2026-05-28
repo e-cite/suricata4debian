@@ -62,7 +62,7 @@ jobs:
           apt-get install -y --no-install-recommends build-essential devscripts equivs
           mk-build-deps --install --remove --tool "apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y"
       - name: Build the package
-        run: dpkg-buildpackage -us -uc
+        run: dpkg-buildpackage --unsigned-source --unsigned-changes --build=binary
 #       - name: Upload artifact
 #         uses: actions/upload-artifact@v4
 #         with:

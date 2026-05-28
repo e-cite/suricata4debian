@@ -1,4 +1,4 @@
-Source: suricata
+Source: suricata8
 Section: net
 Maintainer: Sascha Steinbiss <satta@debian.org>
 Uploaders: Pierre Chifflier <pollux@debian.org>, Andreas Dolp <dev@andreas-dolp.de>
@@ -37,7 +37,7 @@ Homepage: https://suricata.io
 Vcs-Browser: https://salsa.debian.org/pkg-suricata-team/pkg-suricata
 Vcs-Git: https://salsa.debian.org/pkg-suricata-team/pkg-suricata.git
 
-Package: suricata
+Package: suricata8
 Architecture: linux-any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}

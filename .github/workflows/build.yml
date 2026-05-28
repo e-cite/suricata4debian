@@ -45,6 +45,8 @@ jobs:
           echo "DEBFULLNAME=$DEBFULLNAME"
           echo "DEBEMAIL=$DEBEMAIL"
       - run: cat /etc/debian_version
+      - name: Checkout the git repo
+        uses: actions/checkout@v4
       - name: Download upstream tarball as artifact
         uses: actions/download-artifact@v8
         with:
@@ -54,8 +56,6 @@ jobs:
         run: |
           tar --extract --verbose --gunzip --file "suricata-$UPSTREAM_VERSION.tar.gz"
       - run: ls -la
-#       - uses: actions/checkout@v4
-#
 #       - name: Install build dependencies
 #         run: |
 #           apt-get update

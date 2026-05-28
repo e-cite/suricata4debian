@@ -6,7 +6,27 @@ on:
 env:
   UPSTREAM_VERSION: 8.0.5
 jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install tools for download
+        run: |
+          apt update
+          apt-get install -y curl sha256sum
+      - name: Download Suricata $UPSTREAM_VERSION upstream tarball
+        run: curl -O "https://www.openinfosecfoundation.org/download/suricata-$UPSTREAM_VERSION.tar.gz"
+      - name: Calculate SHA256 hash of download file
+        run: sha256sum "suricata-$UPSTREAM_VERSION.tar.gz"
+      # TODO: Verify download
+      - run: ls -l
+      - name: Upload upstream tarball as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: suricata-upstream
+          path: "suricata-$UPSTREAM_VERSION.tar.gz"
+          retention-days: 5
   build:
+    needs: download
     strategy:
       fail-fast: false  # Do not cancel other matrix jobs when one job fails
       matrix:
@@ -29,14 +49,13 @@ jobs:
           echo "suricata${{ matrix.major_version }}-${{ matrix.variant }} \
           for ${{ matrix.distro }} on ${{ matrix.arch }}"
       - run: cat /etc/debian_version
-      - run: |
-          apt update
-          apt-get install -y curl
-      - run: curl -O "https://www.openinfosecfoundation.org/download/suricata-$UPSTREAM_VERSION.tar.gz"
-      # TODO: Verify download
+      - name: Download upstream tarball as artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: suricata-upstream
+      - run: ls -la
       - run: tar -xvzf "suricata-$UPSTREAM_VERSION.tar.gz"
-      - run: ls -l      
-      
+      - run: ls -la
 #       - uses: actions/checkout@v4
 #
 #       - name: Install build dependencies
